@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: app
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/app
+  SPRING_DATASOURCE_USERNAME: bekom
+  SPRING_DATASOURCE_PASSWORD: bekom
