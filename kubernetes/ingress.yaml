@@ -3,22 +3,31 @@ kind: Ingress
 metadata:
   name: ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/enable-modsecurity: "true"
     nginx.ingress.kubernetes.io/modsecurity-snippet: |
       SecRuleEngine On
+      SecAuditEngine RelevantOnly
+      SecAuditLog /var/log/sec_audit.log
+      SecAuditLogParts ACH
       SecRequestBodyAccess On
-      SecRule REQUEST_HEADERS:User-Agent "curl" "id:1,deny,status:666"
-      SecRule REQUEST_BODY "@!streq test" "id:2,deny,status:666"
-      SecRule REQUEST_BODY "@rx BAD BODY" "id:11,phase:request,deny,log,status:667"
+      SecRule ARGS|REQUEST_BODY "@contains \' or 2>1--" "id:2,deny,log,status:999"
+      SecRule ARGS|REQUEST_BODY "@contains ../../../../../etc/passwd" "id:3,deny,log,status:999"
+      SecRule ARGS|REQUEST_BODY "@contains ls -la" "id:5,phase:request,log"
 spec:
   rules:
     - http:
         paths:
+          - path: /static
+            pathType: Prefix
+            backend:
+              service:
+                name: static-app-service
+                port:
+                  number: 5000
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: app-service
+                name: task-app-service
                 port:
                   number: 8080

@@ -2,26 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: task-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app
+      app: task-app
   template:
     metadata:
       labels:
-        app: app
+        app: task-app
     spec:
       containers:
-        - name: app
+        - name: task-app
           image: docker.io/tulski/bekom-demo-app:latest
           securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
+            runAsUser: 1001
+            runAsGroup: 1001
             runAsNonRoot: true
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
             capabilities:
                 drop:
                     - ALL
@@ -30,4 +29,4 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: app-config
+                name: task-app-config
