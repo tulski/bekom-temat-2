@@ -29,7 +29,7 @@ class TaskController {
         return taskRepository.findById(id);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public Collection<Task> getTasksByDescription(@RequestParam("description") String description) {
         return taskRepository.findByDescription(description);
     }
